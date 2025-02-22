@@ -20,7 +20,7 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 # Ruta para servir index.html
 @app.get("/", response_class=HTMLResponse)
 async def get_index():  
-    with open("static/index.html", "r") as f:
+    with open("app/static/index.html", "r") as f:
         return HTMLResponse(content=f.read())
     
 # Dependencia para obtener una sesión de base de datos en cada request
