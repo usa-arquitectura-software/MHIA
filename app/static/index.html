@@ -89,7 +89,7 @@
             const name = document.getElementById("name").value;
             const age = document.getElementById("age").value;
 
-            const url = isLogin ? "/login" : "/register";
+            const url = isLogin ? "/login_psycologist": "/register_psycologist";
             const bodyData = isLogin ? { email, password } : { email, password, name, age };
 
             try {

@@ -15,15 +15,15 @@ from sqlmodel import SQLModel, Field
 # schemas.py
 
 class PsycologistBase(SQLModel):
-    name: str = Field(default=None)
-    age: int = Field(defalult=None)
     email: EmailStr = Field(default=None)
     password: str = Field(default=None)
 
-# Datos necesarios para registrar un Psycologist
 class PsycologistCreate(PsycologistBase):
-    pass
+    name: str = Field(default=None)
+    age: int = Field(default=None)
 
-# Esquema de salida (para evitar exponer password)
-class Psycologist(PsycologistBase, table=True):
+class Psycologist(PsycologistCreate, table=True):
     id: int | None = Field(default=None,primary_key =True)
+
+class PsycologistLogin(PsycologistBase):
+    pass

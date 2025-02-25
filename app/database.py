@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import Depends, FastAPI
 
 sqlite_name = "db.sqlite3"
-sqlite_url = f"sqlite:///./data/{sqlite_name}"
+sqlite_url = f"sqlite:///./{sqlite_name}"
 
 
 engine = create_engine(sqlite_url)
