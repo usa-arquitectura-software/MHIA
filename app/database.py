@@ -1,38 +1,38 @@
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
-from app.config import DATABASE_URL
+# from sqlalchemy import create_engine
+# from sqlalchemy.orm import sessionmaker, declarative_base
+# from app.config import DATABASE_URL
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+# engine = create_engine(DATABASE_URL)
+# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Base = declarative_base()
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+# def get_db():
+#     db = SessionLocal()
+#     try:
+#         yield db
+#     finally:
+#         db.close()
 
-# from sqlmodel import Session, create_engine, SQLModel
-# from typing import Annotated
-# from fastapi import Depends, FastAPI
+from sqlmodel import Session, create_engine, SQLModel
+from typing import Annotated
+from fastapi import Depends, FastAPI
 
-# sqlite_name = "db.sqlite3"
-# sqlite_url = f"sqlite:///./{sqlite_name}"
+sqlite_name = "db.sqlite3"
+sqlite_url = f"sqlite:///./{sqlite_name}"
 
 
-# engine = create_engine(sqlite_url)
+engine = create_engine(sqlite_url)
 
-# def create_all_tables(app: FastAPI):
-#     SQLModel.metadata.create_all(engine) 
-#     yield
+def create_all_tables(app: FastAPI):
+    SQLModel.metadata.create_all(engine) 
+    yield
 
-# def get_session():
-#     with Session(engine) as session:
-#         yield session
+def get_session():
+    with Session(engine) as session:
+        yield session
         
-# SessionDep = Annotated[Session, Depends(get_session)]
+SessionDep = Annotated[Session, Depends(get_session)]
 
 # # # database.py
 # # from sqlalchemy import create_engine
