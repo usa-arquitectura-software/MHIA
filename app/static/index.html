@@ -3,112 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login y Registro</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            width: 300px;
-            text-align: center;
-        }
-        h2 {
-            margin-bottom: 10px;
-        }
-        input {
-            width: 90%;
-            padding: 10px;
-            margin: 5px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .toggle-btn {
-            background: none;
-            color: #007bff;
-            text-decoration: underline;
-            cursor: pointer;
-            border: none;
-            margin-top: 10px;
-        }
-    </style>
+    <title>Plataforma Psicólogos</title>
+    <link rel="stylesheet" href="static/styles.css">
 </head>
 <body>
-
     <div class="container">
-        <h2 id="form-title">Login</h2>
-        <form id="auth-form">
-            <input type="email" id="email" placeholder="Correo electrónico" required>
-            <input type="password" id="password" placeholder="Contraseña" required>
-            <input type="text" id="name" placeholder="Nombre" style="display: none;">
-            <input type="number" id="age" placeholder="Edad" style="display: none;">
-            <button type="submit">Iniciar sesión</button>
-        </form>
-        <button class="toggle-btn" onclick="toggleForm()">¿No tienes cuenta? Regístrate</button>
+        <h1>Plataforma para Psicólogos</h1>
+        
+        <div id="login">
+            <h2>Iniciar Sesión</h2>
+            <input type="text" id="username" placeholder="Usuario">
+            <input type="password" id="password" placeholder="Contraseña">
+            <button onclick="login()">Ingresar</button>
+        </div>
+
+        <div id="register" style="display: none;">
+            <h2>Registro</h2>
+            <input type="text" id="reg_username" placeholder="Usuario">
+            <input type="password" id="reg_password" placeholder="Contraseña">
+            <button onclick="register()">Registrar</button>
+        </div>
+
+        <div id="dashboard" style="display: none;">
+            <h2>Pacientes</h2>
+            <ul id="patient-list"></ul>
+            <h3>Subir Sesión</h3>
+            <input type="file" id="sessionFile">
+            <button onclick="uploadSession()">Subir</button>
+        </div>
     </div>
 
     <script>
-        let isLogin = true; // Estado actual (Login o Registro)
-
-        function toggleForm() {
-            isLogin = !isLogin;
-            document.getElementById("form-title").innerText = isLogin ? "Login" : "Registro";
-            document.querySelector("button[type='submit']").innerText = isLogin ? "Iniciar sesión" : "Registrarse";
-            document.getElementById("name").style.display = isLogin ? "none" : "block";
-            document.getElementById("age").style.display = isLogin ? "none" : "block";
-            document.querySelector(".toggle-btn").innerText = isLogin ? "¿No tienes cuenta? Regístrate" : "¿Ya tienes cuenta? Inicia sesión";
+        async function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            
+            const response = await fetch("/token", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `username=${username}&password=${password}`
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem("token", data.access_token);
+                document.getElementById("login").style.display = "none";
+                document.getElementById("dashboard").style.display = "block";
+                loadPatients();
+            } else {
+                alert("Usuario o contraseña incorrectos");
+            }
         }
 
-        document.getElementById("auth-form").addEventListener("submit", async function(event) {
-            event.preventDefault();
+        async function register() {
+            const username = document.getElementById("reg_username").value;
+            const password = document.getElementById("reg_password").value;
             
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-            const name = document.getElementById("name").value;
-            const age = document.getElementById("age").value;
-
-            const url = isLogin ? "/login_psycologist": "/register_psycologist";
-            const bodyData = isLogin ? { email, password } : { email, password, name, age };
-
-            try {
-                const response = await fetch(`http://127.0.0.1:8000${url}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(bodyData),
-                });
-
-                const data = await response.json();
-                console.log(data);
-                if (!response.ok) throw new Error(data.detail || "Algo salió mal");
-
-                alert(data.message);
-            } catch (error) {
-                alert(error.message);
+            const response = await fetch("/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password, role: "psicologo" })
+            });
+            
+            if (response.ok) {
+                alert("Usuario registrado correctamente");
+            } else {
+                alert("Error al registrar usuario");
             }
-        });
-    </script>
+        }
 
+        async function loadPatients() {
+            const token = localStorage.getItem("token");
+            const response = await fetch("/patients", {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            
+            if (response.ok) {
+                const patients = await response.json();
+                const list = document.getElementById("patient-list");
+                list.innerHTML = "";
+                patients.forEach(patient => {
+                    const li = document.createElement("li");
+                    li.textContent = patient.name;
+                    list.appendChild(li);
+                });
+            }
+        }
+
+        async function uploadSession() {
+            const fileInput = document.getElementById("sessionFile");
+            const file = fileInput.files[0];
+            const token = localStorage.getItem("token");
+            
+            if (!file) {
+                alert("Seleccione un archivo");
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append("file", file);
+            
+            const response = await fetch("/upload_session", {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${token}` },
+                body: formData
+            });
+            
+            if (response.ok) {
+                alert("Sesión subida correctamente");
+            } else {
+                alert("Error al subir sesión");
+            }
+        }
+    </script>
 </body>
 </html>
