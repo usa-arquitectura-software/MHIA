@@ -3,10 +3,14 @@ from app.routes import auth, users, patients, sessions,audio
 from app.database import Base, engine
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
 
-# Inicializar la base de datos
+# Inicializar la base de datos (sqllite)
 Base.metadata.create_all(bind=engine)
+
+
+
 
 app = FastAPI(title="Plataforma Psicólogos")
 

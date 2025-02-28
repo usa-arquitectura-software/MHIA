@@ -22,7 +22,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgresql+asyncpg://myuser:mypassword@db:5432/mydatabase
+      DATABASE_URL: postgresql+asyncpg://user:password@db:5432/mydatabase
     volumes:
       - .:/app
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
