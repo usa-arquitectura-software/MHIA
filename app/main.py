@@ -1,18 +1,22 @@
 from fastapi import FastAPI
 from app.routes import auth, users, patients, sessions,audio
-from app.database import Base, engine
+from app.database import init_db
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-
-
-# Inicializar la base de datos (sqllite)
-Base.metadata.create_all(bind=engine)
+from contextlib import asynccontextmanager
 
 
 
+@asynccontextmanager
+async def lifespan(app : FastAPI):
+    await init_db()
+    yield
 
-app = FastAPI(title="Plataforma Psicólogos")
+
+
+app = FastAPI(title="Plataforma Psicólogos",lifespan=lifespan)
+
 
 
 app.add_middleware(

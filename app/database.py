@@ -3,30 +3,25 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from app.config import DATABASE_URL
+from app.models import Base
 
-engine = create_engine(DATABASE_URL)
-#SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Crear el motor asíncrono
 engine = create_async_engine(DATABASE_URL, echo=True)
 
-
-SessionLocal = sessionmaker(
-    bind=engine,
-    class_=AsyncSession,
-    expire_on_commit=False,
+# Crear la sesión asíncrona
+async_session = sessionmaker(
+    engine, expire_on_commit=False, class_=AsyncSession
 )
 
+# Dependencia de sesión para FastAPI
+async def get_db():
+    async with async_session() as session:
+        yield session
 
-Base = declarative_base()
 
-
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+async def init_db():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
 # from sqlmodel import Session, create_engine, SQLModel
 # from typing import Annotated
