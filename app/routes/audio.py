@@ -5,11 +5,14 @@ import os
 router = APIRouter()
 transcription_service = AudioTranscriptionService()
 
+
+
 @router.post("/transcribe/")
 async def transcribe_audio(file: UploadFile = File(...)):
     """
     Sube un archivo de audio y devuelve la transcripción usando Whisper.
     """
+
     file_path = f"temp/{file.filename}"
 
 

@@ -15,7 +15,10 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   app:
-    build: .
+    build:
+      context: .
+      args:
+        - USE_WHISPER=${USE_WHISPER:-false}  # Usar Whisper solo si la variable está definida
     container_name: fastapi_app
     depends_on:
       - db
@@ -23,7 +26,10 @@ services:
       - "8000:8000"
     environment:
       DATABASE_URL: postgresql+asyncpg://myuser:mypassword@db:5432/mydatabase
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+      USE_WHISPER: ${USE_WHISPER:-false}  # Pasar la variable al contenedor
+    volumes:
+      - ~/.cache/whisper:/root/.cache/whisper  # Volumen para los modelos de Whisper
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000  # Comando para producción
 
 volumes:
   postgres_data:
