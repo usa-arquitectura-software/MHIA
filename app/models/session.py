@@ -17,3 +17,13 @@ class Session(SQLModel, table=True):
 
     patient: Patient = Relationship()
     psychologist: User = Relationship()
+
+class SessionCreate(SQLModel):
+    patient_id: int
+    psychologist_id: int
+    audio_url: Optional[str] = None
+    transcript: Optional[str] = None
+    analysis: Optional[str] = None
+
+class SessionDelete(SQLModel):
+    id: int

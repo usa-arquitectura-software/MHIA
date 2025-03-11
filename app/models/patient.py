@@ -11,3 +11,7 @@ class Patient(SQLModel, table=True):
     psychologist_id: int = Field(foreign_key="users.id")
 
     psychologist: User = Relationship()
+
+class PatientCreate(SQLModel):
+    name: str
+    email: str
