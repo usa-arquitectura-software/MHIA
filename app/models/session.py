@@ -1,16 +1,19 @@
-from sqlalchemy import Column, Integer, ForeignKey, DateTime, String, Text
-from sqlalchemy.orm import relationship
 from datetime import datetime
-from app.models import Base
+from typing import Optional
+from sqlmodel import SQLModel, Field, Relationship
+from app.models.patient import Patient
+from app.models.user import User
 
-class Session(Base):
+class Session(SQLModel, table=True):
     __tablename__ = "sessions"
-    id = Column(Integer, primary_key=True, index=True)
-    patient_id = Column(Integer, ForeignKey("patients.id"))
-    psychologist_id = Column(Integer, ForeignKey("users.id"))
-    session_date = Column(DateTime, default=datetime.utcnow)
-    audio_url = Column(String, nullable=True)
-    transcript = Column(Text, nullable=True)
-    analysis = Column(Text, nullable=True)
-    patient = relationship("Patient")
-    psychologist = relationship("User")
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    patient_id: int = Field(foreign_key="patients.id")
+    psychologist_id: int = Field(foreign_key="users.id")
+    session_date: datetime = Field(default_factory=datetime.utcnow)
+    audio_url: Optional[str] = None
+    transcript: Optional[str] = None
+    analysis: Optional[str] = None
+
+    patient: Patient = Relationship()
+    psychologist: User = Relationship()
