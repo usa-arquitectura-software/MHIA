@@ -1,0 +1,78 @@
+/* Estilos generales */
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: #f0f0f0;
+  padding: 20px;
+  text-align: right;
+}
+
+h1 {
+  text-align: center;
+  margin: 50px 0;
+}
+
+section {
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* Estilos para las tarjetas de información */
+.info-cards-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.info-card {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
+  width: 30%;
+  box-sizing: border-box;
+}
+
+.info-card h2 {
+  margin-top: 0;
+}
+
+/* Estilos para el carrusel de testimonios */
+.carousel-container {
+  display: flex;
+  justify-content: center;
+}
+
+.carousel-container .carousel {
+  width: 80%;
+}
+
+.carousel-container .carousel .slide {
+  display: flex;
+  justify-content: center;
+}
+
+.carousel-container .carousel .slide .info-card {
+  width: 80%;
+  max-width: 400px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.carousel-container .carousel .slide .info-card img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Estilos para las imágenes de los testimonios */
+.testimonial-card img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 10px;
+  display: block;
+}
