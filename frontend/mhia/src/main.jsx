@@ -14,11 +14,11 @@ createRoot(document.getElementById("root")).render(
       <Header />
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/LogIn" element={<LogInPage />} />
+        <Route path="/login" element={<LogInPage />} />
+        <Route path="/signin" element={<SignIn />} />
         <Route path="/patients" element={<SelectPatient />} />
-        <Route path="/session/:patientId" element={<SessionPage />} />
-        
-        <Route path="*" element={<div>Página no encontrada</div>} />
+        <Route path="/session/:patientId" element={<SessionPage />}/>
+        <Route path="*" element={<div>Page not found</div>} />
       </Routes>
       <Footer />
     </BrowserRouter>
